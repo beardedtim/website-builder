@@ -15,6 +15,10 @@ $ cd my-app
 
 $ yarn install
 
+// If you want to use NVM and node 7.*/npm 3.*
+// https://github.com/creationix/nvm
+$ nvm use
+
 $ yarn run start
 ```
 
