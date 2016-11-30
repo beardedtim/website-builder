@@ -114,8 +114,7 @@ export const Reader = {
    * toHTML - Takes in a node and returns a string that looks like HTML
    * 
    * (Node) => String
-   * @memberof Reader
-   * @alias toHTML
+   * 
    * @param {Node} node           the node to turn into HTML
    * @return {string} HTMLString  the HTMl version of our Node    
    */   
