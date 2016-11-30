@@ -24,6 +24,112 @@
   * A string of HTML
   * @typedef {string} HTMLString   a string that is valid HTML 
   */  
+  
+  /** 
+   * List of tag names that do not need an ending. 
+   * 
+   * This also means that there cannot be children/text inside of these tags
+   * 
+   * @type {string[]}  List of self closing tags 
+   */  
+  export const SELF_CLOSING_TAGS = [
+    'area',
+    'base',
+    'br',
+    'col',
+    'command',
+    'embed',
+    'hr',
+    'img',
+    'input',
+    'keygen',
+    'link',
+    'meta',
+    'param',
+    'source',
+    'track',
+    'wbr'
+  ]
+  
+  export const getPropsFromTag = (tag) =>{
+    const maybeWithoutProps = /<(.+?)>/
+    if(maybeWithoutProps.exec(tag)){
+      const fullTag = maybeWithoutProps.exec(tag)[1].split(' ').reduce((nodes,str)=>{
+        if(str.indexOf('=') < 0){
+          return nodes
+        }else{
+          const split = str.split('=')
+          return [
+            ...nodes,
+            {
+              name: split[0],
+              value: split[1].slice(1,-1)
+            }
+          ]
+        }
+      },[])
+      return fullTag
+    }else {
+      return []
+    }
+    
+  }
+  
+  
+  /**  
+   * Given our structured HTML tag, returns the tag name
+   * 
+   * This is naively done. Assumes that anything with = has a tag in it
+   * 
+   * @param {string} str    the string that might have props 
+   * @return {string}       the type / HTML tag name    
+   */   
+  export const getTypeFromMaybeWithProps = (str) => {
+    if(str.indexOf('=') < 0){
+      return str
+    }else {
+      return str.split(' ')[0]
+    }
+  }
+  
+  export const getElementsFromString = (str) => {
+    if(typeof str !== 'string'){
+      throw new TypeError(`getElementString expects str to be typeof string.`)
+    }
+    const isOpeningTag = /<([^/].*?)>/,
+          isClosingTag = /<\/(.*?)>/,
+          openingTagGroup = isOpeningTag.exec(str),
+          closingTagGroup = isClosingTag.exec(str),
+          node = {}
+    
+    /**
+     * If we have an opening tag inside of this
+     */      
+    if(openingTagGroup){
+      // Let's find out if we have any props
+      node.props = getPropsFromTag(openingTagGroup[0])
+      // And we need to find the tag
+      node.type = getTypeFromMaybeWithProps(openingTagGroup[1])
+      // If we have a closing tag group in this structure
+      if(closingTagGroup){
+        // Let's find out if we have any more opening tags
+        const withoutOpeningTag = str.replace(openingTagGroup[0],''),
+              // this will return null if there is no opening tag
+              nestedOpeningTagGroup = isOpeningTag.exec(withoutOpeningTag)
+        // If we did not find a nestedOpeningTagGroup      
+        if(!nestedOpeningTagGroup){
+          // we can assume that this has no children and instead
+          // just is a text node
+          node.text = withoutOpeningTag.replace(closingTagGroup[0],'')
+        }else {
+          
+        }
+      }
+    }
+    
+    
+    return node
+  }
 
  /**
   * flattenProps - Creates opening HTML tag with props
@@ -70,34 +176,6 @@
      }
      return str
  }
- 
- 
- 
- /** 
-  * List of tag names that do not need an ending. 
-  * 
-  * This also means that there cannot be children/text inside of these tags
-  * 
-  * @type {string[]}  List of self closing tags 
-  */  
- export const SELF_CLOSING_TAGS = [
-   'area',
-   'base',
-   'br',
-   'col',
-   'command',
-   'embed',
-   'hr',
-   'img',
-   'input',
-   'keygen',
-   'link',
-   'meta',
-   'param',
-   'source',
-   'track',
-   'wbr'
- ]
 
 
 /**
@@ -136,7 +214,7 @@ export const Reader = {
   toJSON: (HTMLString) => {
     
   },
-  
+  getElementsFromString,
   flattenProps,
   flattenChildren
 }

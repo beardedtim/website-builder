@@ -140,4 +140,67 @@ describe('Reader',()=>{
       expect(flat).to.equal('<div id="awesomeID" >')
     })
   })
+  
+  describe('Reader.getElementsFromString',()=>{
+    it('exists',()=>{
+      expect(Reader.getElementsFromString).to.exist
+    })
+    
+    it('only takes in a string',()=>{
+      const str = 'hello world',
+            notStrs = [false,null,undefined,{},[],1]
+      notStrs.forEach(notStr => {
+        expect(()=>{Reader.getElementsFromString(notStr)}).to.throw('getElementString expects str to be typeof string.')
+      })
+      expect(()=>{Reader.getElementsFromString(str)}).to.not.throw('getElementString expects str to be typeof string.')
+    })
+    
+    
+    it('returns an object',()=>{
+      const str = 'hello',
+            parsed = Reader.getElementsFromString(str)
+      expect(parsed.toString()).to.equal("[object Object]")
+    })
+    
+    it('returns a tree of nodes from string',()=>{
+      const str = '<p>Hello world!</p>',
+            parsed = Reader.getElementsFromString(str),
+            node = {
+              type: 'p',
+              text:'Hello world!',
+              props: []
+            }
+      expect(parsed).to.deep.equal(node)
+      
+      
+      const div = '<div>Hello from div!</div>',
+            divNode = {
+              type: 'div',
+              props: [],
+              text: 'Hello from div!'
+            },
+            divParsed = Reader.getElementsFromString(div)
+      expect(divParsed).to.deep.equal(divNode)
+    })
+    
+    it('returns a tree of nodes with props',()=>{
+      const str = '<p class="timi">Hello world!</p>',
+            node = {
+              type: 'p',
+              text: 'Hello world!',
+              props: [
+                {
+                  name: 'class',
+                  value: 'timi'
+                }
+              ]
+            },
+            parsed = Reader.getElementsFromString(str)
+      expect(parsed).to.deep.equal(node)
+    })
+    
+    
+    
+  })
+
 })
