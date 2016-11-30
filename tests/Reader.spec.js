@@ -199,8 +199,34 @@ describe('Reader',()=>{
       expect(parsed).to.deep.equal(node)
     })
     
+  })
+  
+  describe('getTagGroup',()=>{
+    it('exists',()=>{
+      expect(Reader.getTagGroup).to.exist
+    })
     
-    
+    it('returns a node with type and text',()=>{
+      const str = '<p class="timi">Hello world</p>'
+      expect(Reader.getTagGroup(str)).to.deep.equal({
+        type: 'p',
+        text: 'Hello world',
+        props: [{
+          name: 'class',
+          value:'timi'
+        }]
+      })
+      
+      const div = '<div id="app">Hello world!</div>'
+      expect(Reader.getTagGroup(div)).to.deep.equal({
+        type: 'div',
+        text: 'Hello world!',
+        props: [{
+          name: 'id',
+          value: 'app'
+        }]
+      })
+    })
   })
 
 })

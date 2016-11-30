@@ -51,6 +51,22 @@
     'wbr'
   ]
   
+  export const getTagGroup = (str) => {
+    const group = /(<(.*?)>)(.*)(<\/(.*?)>)/,
+          groups = group.exec(str)
+    if(!groups){
+      return {
+        type: 'text',
+        text: str
+      }
+    }
+    return {
+      type: getTypeFromMaybeWithProps(groups[2]),
+      text: groups[3],
+      props: getPropsFromTag(groups[1])
+    }
+  }
+  
   export const getPropsFromTag = (tag) =>{
     const maybeWithoutProps = /<(.+?)>/
     if(maybeWithoutProps.exec(tag)){
@@ -122,7 +138,10 @@
           // just is a text node
           node.text = withoutOpeningTag.replace(closingTagGroup[0],'')
         }else {
-          
+          // We assume that we have children inside of here
+          // that we somehow need to find all the opening and closing
+          // of these.
+          node.children = []
         }
       }
     }
@@ -130,6 +149,7 @@
     
     return node
   }
+  
 
  /**
   * flattenProps - Creates opening HTML tag with props
@@ -216,5 +236,6 @@ export const Reader = {
   },
   getElementsFromString,
   flattenProps,
-  flattenChildren
+  flattenChildren,
+  getTagGroup
 }
