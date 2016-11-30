@@ -5,15 +5,15 @@
 
 /**
  * An HTML Props object
- * @typedef {Object} prop     the key/value pair of an HTML prop
- * @param {string} name       the name of the prop
- * @param {string} value      the value to be encompassed with "${value}" 
+ * @typedef {Object} prop     
+ * @property {string} name       the name of the prop
+ * @property {string} value      the value to be encompassed with "${value}" 
  */ 
 
 
 /**
  * A HTML Node 
- * @typedef {Object} Node                the node that will be built into HTML
+ * @typedef {Object} Node                
  * @property {!string} type               the type of HTML tag this node is
  * @property {?Node[]} children           the children of this tag
  * @property {?prop[]} props    the props to add to the node
@@ -28,6 +28,9 @@
  /**
   * flattenProps - Creates opening HTML tag with props
   * 
+  * (String, prop[]) => String
+  * 
+  * @type {function}
   * @param {string} type           the HTML tag to make
   * @param {prop[]} [props=[]]     the props to attach
   * @param {!string} props[].name  the name of the prop to add
@@ -53,23 +56,9 @@
 
 
  /**
-  * flattenChildren - Creates HTML for children
+  * flattenChildren - Creates HTML for children (Node[]) => String
   * 
-  * TODO: make so where children can be added to specific spots
-  *        
-  *       Example: {
-  *          type: 'p',
-  *          text: 'this will $1 surrounded by text',
-  *          children: [
-  *              {
-  *                type: 'span',
-  *                text: 'be a span tag'
-  *              }
-  *            ]
-  *        }
-  *        ===
-  *        <p>This will <span>be a span tag</span> surrounded by text</p>
-  * 
+  * @type {function} 
   * @param {Node[]} children   the children to flatten
   * @return {string} str       the final version of the nested children
   * 
@@ -114,7 +103,10 @@
 /**
  * The main object we export
  * 
- * @property {function} toHTML     exports Node to HTML
+ * @property {function} toHTML          exports HTMLString from Node
+ * @property {function} toJSON          exports Node from HTMLString 
+ * @property {function} flattenProps    flattens props (type,props) => str
+ * @property {function} flattenChildren flattens children (children) => str
  */ 
 export const Reader = {
   
@@ -122,7 +114,8 @@ export const Reader = {
    * toHTML - Takes in a node and returns a string that looks like HTML
    * 
    * (Node) => String
-   * 
+   * @memberof Reader
+   * @alias toHTML
    * @param {Node} node           the node to turn into HTML
    * @return {string} HTMLString  the HTMl version of our Node    
    */   
