@@ -1,0 +1,22 @@
+{
+  "name": "website-builder",
+  "version": "0.1.0",
+  "description": "A basic JSON <-> HTML converter",
+  "main": "index.js",
+  "repository": {
+    "url": "git@github.com:beardedtim/website-builder.git",
+    "type": "git"
+  },
+  "author": "Timi Roberts <timiroberts@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  },
+  "dependencies": {
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "babel-register": "^6.18.0"
+  }
+}
