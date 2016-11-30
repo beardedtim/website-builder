@@ -169,6 +169,15 @@ describe('Reader',()=>{
       expect(parsed.toString()).to.equal("[object Object]")
     })
     
+    it('can handle just a string of text',()=>{
+      const str = 'hello world',
+            node = {
+              type: 'text',
+              text: 'hello world'
+            }
+      expect(Reader.getElementsFromString(str)).to.deep.equal(node)
+    })
+    
     it('returns a tree of nodes from string',()=>{
       const str = '<p>Hello world!</p>',
             parsed = Reader.getElementsFromString(str),
@@ -204,6 +213,22 @@ describe('Reader',()=>{
             },
             parsed = Reader.getElementsFromString(str)
       expect(parsed).to.deep.equal(node)
+    })
+    
+    it('handles nested values',()=>{
+      const str = '<div><p>Hello world!</p></div>',
+            node = {
+              type: 'div',
+              props: [],
+              children: [
+                {
+                  type: 'p',
+                  props: [],
+                  text: 'Hello world!'
+                }
+              ]
+            }
+      expect(Reader.getElementsFromString(str)).to.deep.equal(node)
     })
     
   })
@@ -243,6 +268,7 @@ describe('Reader',()=>{
         text: 'Hello world'
       })
     })
+    
   })
   
   

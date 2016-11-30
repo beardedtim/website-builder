@@ -51,8 +51,6 @@
     'wbr'
   ]
   
-  
-  
   /**  
    * Returns a node of tag, text, and props for a non-nested HTMLString
    * 
@@ -68,10 +66,19 @@
         text: str
       }
     }
+    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp/exec
+    // 
+    // groups[0] === full string of charactes matched
+    // groups[1...n] === groups surrounded by () -> 
+    // <p>hello</p>  [<p>hello</p>, <p>,p,hello,</p>,p]
+    // 
+    // This means we can check the type and endType to see if they are
+    // the same to find out if we have any nested ones?
+    const [full,openTag,type,innerStr,endTag,endType] = groups
     return {
-      type: getTypeFromMaybeWithProps(groups[2]),
-      text: groups[3],
-      props: getPropsFromTag(groups[1])
+      type: getTypeFromMaybeWithProps(type),
+      text: stripTags(innerStr),
+      props: getPropsFromTag(openTag)
     }
   }
   
@@ -126,6 +133,8 @@
    */   
   export const stripCarats = strip(/<|>/g)
   
+  export const stripTags = strip(/<([^/].*?)>|<\/(.*?)>/g)
+  
   /**  
    * Given our structured HTML tag, returns the tag name
    * 
@@ -142,6 +151,14 @@
     }
   }
   
+  
+  
+  /**  
+   * Returns a node tree from a HTMLString string
+   * 
+   * @param {HTMLString} str      the HTMLString to parse
+   * @return {Node} node          the node tree from the HTMLString  
+   */   
   export const getElementsFromString = (str) => {
     if(typeof str !== 'string'){
       throw new TypeError(`getElementString expects str to be typeof string.`)
@@ -156,30 +173,39 @@
      * If we have an opening tag inside of this
      */      
     if(openingTagGroup){
+      
       // Let's find out if we have any props
       node.props = getPropsFromTag(openingTagGroup[0])
       // And we need to find the tag
       node.type = getTypeFromMaybeWithProps(openingTagGroup[1])
+      
       // If we have a closing tag group in this structure
       if(closingTagGroup){
+        
         // Let's find out if we have any more opening tags
         const withoutOpeningTag = str.replace(openingTagGroup[0],''),
               // this will return null if there is no opening tag
               nestedOpeningTagGroup = isOpeningTag.exec(withoutOpeningTag)
+              
         // If we did not find a nestedOpeningTagGroup      
         if(!nestedOpeningTagGroup){
           // we can assume that this has no children and instead
           // just is a text node
           node.text = withoutOpeningTag.replace(closingTagGroup[0],'')
         }else {
+          
           // We assume that we have children inside of here
           // that we somehow need to find all the opening and closing
           // of these.
-          node.children = []
+          node.children = [getSingleNodeGroup(withoutOpeningTag)]
+          
         }
+        
       }
+    }else {
+      node.type = 'text'
+      node.text = str
     }
-    
     
     return node
   }
