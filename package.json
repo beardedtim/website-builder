@@ -22,7 +22,7 @@
   },
   "scripts": {
     "test": "mocha --require babel-register tests/**/*.spec.js",
-    "test:w": "mocha --require babel-register tests/**/*.spec.js",
+    "test:w": "mocha --require babel-register tests/**/*.spec.js --watch",
     "dev": "nodemon index.js"
   }
 }
