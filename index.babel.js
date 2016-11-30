@@ -20,20 +20,31 @@
  * @property {?string} text     the inner text of the node
  */ 
 
+ /** 
+  * A string of HTML
+  * @typedef {string} HTMLString   a string that is valid HTML 
+  */  
 
  /**
   * flattenProps - Creates opening HTML tag with props
   * 
   * @param {string} type           the HTML tag to make
-  * @param {prop[]} props          the props to attach
-  * @param {!string} props[].name   the name of the prop to add
-  * @param {!string} props[].value  the value of the prop to add
+  * @param {prop[]} [props=[]]     the props to attach
+  * @param {!string} props[].name  the name of the prop to add
+  * @param {!string} props[].value the value of the prop to add
   * @return {string} str           the final opening tag w props
   */ 
- const flattenProps = (type,props) => {
+ export const flattenProps = (type,props = []) => {
    let str = `<${type} `
    for(let i = 0; i < props.length; i++){
      const {name,value} = props[i]
+     
+     // If we do not have truthy values to use for name or value
+     // let's skip this iteration
+     if(!name || !value){
+       continue;
+     }
+     
      str += `${name}="${value}" `
    }
    str += '>'
@@ -63,13 +74,41 @@
   * @return {string} str       the final version of the nested children
   * 
   */   
- const flattenChildren = (children) => {
+ export const flattenChildren = (children) => {
      let str = ''
      for(let i = 0; i < children.length; i++){
        str += Reader.toHTML(children[i])
      }
      return str
  }
+ 
+ 
+ 
+ /** 
+  * List of tag names that do not need an ending. 
+  * 
+  * This also means that there cannot be children/text inside of these tags
+  * 
+  * @type {string[]}  List of self closing tags 
+  */  
+ export const SELF_CLOSING_TAGS = [
+   'area',
+   'base',
+   'br',
+   'col',
+   'command',
+   'embed',
+   'hr',
+   'img',
+   'input',
+   'keygen',
+   'link',
+   'meta',
+   'param',
+   'source',
+   'track',
+   'wbr'
+ ]
 
 
 /**
@@ -101,6 +140,11 @@ export const Reader = {
     
     return beginning + flattenChildren(children) + ending
   },
+  
+  toJSON: (HTMLString) => {
+    
+  },
+  
   flattenProps,
   flattenChildren
 }
