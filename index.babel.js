@@ -51,7 +51,15 @@
     'wbr'
   ]
   
-  export const getTagGroup = (str) => {
+  
+  
+  /**  
+   * Returns a node of tag, text, and props for a non-nested HTMLString
+   * 
+   * @param {HTMLString} str      the single-level HTMLString to parse
+   * @return {Node}               the node of the group
+   */   
+  export const getSingleNodeGroup = (str) => {
     const group = /(<(.*?)>)(.*)(<\/(.*?)>)/,
           groups = group.exec(str)
     if(!groups){
@@ -67,6 +75,13 @@
     }
   }
   
+  
+  /**  
+   * Returns an array of props found inside of opening tag
+   * 
+   * @param {string} tag      the HTMLString tag we are getting from
+   * @return {prop[]| []} props   an array of props  
+   */   
   export const getPropsFromTag = (tag) =>{
     const maybeWithoutProps = /<(.+?)>/
     if(maybeWithoutProps.exec(tag)){
@@ -93,6 +108,25 @@
   
   
   /**  
+   * Removes the regex from the string
+   * 
+   * @param {RegExp} regex    the regex to replace
+   * @return {function}       ( str => str ) a function that takes in
+   *                          a string and returns the string with the
+   *                          regex replaced by ''
+   */   
+  export const strip = regex => str => str.replace(regex,'')
+  
+  
+  
+  /**  
+   * Strips < or > globally from a string
+   * 
+   * @type {function}     (str => str) removes all instances of < or >  
+   */   
+  export const stripCarats = strip(/<|>/g)
+  
+  /**  
    * Given our structured HTML tag, returns the tag name
    * 
    * This is naively done. Assumes that anything with = has a tag in it
@@ -102,9 +136,9 @@
    */   
   export const getTypeFromMaybeWithProps = (str) => {
     if(str.indexOf('=') < 0){
-      return str
+      return stripCarats(str)
     }else {
-      return str.split(' ')[0]
+      return stripCarats(str.split(' ')[0])
     }
   }
   
@@ -218,6 +252,9 @@ export const Reader = {
    */   
   toHTML: (node) => {
     const {type,children,text,props = []} = node
+    if(type === 'text'){
+      return text
+    }
     const beginning = props.length ? flattenProps(type,props) : `<${type}>`,
           ending = `</${type}>`
     if(!children && !text){
@@ -237,5 +274,7 @@ export const Reader = {
   getElementsFromString,
   flattenProps,
   flattenChildren,
-  getTagGroup
+  getSingleNodeGroup,
+  getTypeFromMaybeWithProps,
+  getPropsFromTag
 }

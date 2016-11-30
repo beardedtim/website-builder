@@ -52,6 +52,13 @@ describe('Reader',()=>{
       },
             html = Reader.toHTML(node)
       expect(html).to.equal('<p class="testingClass" id="testingID" data-id="1234" >This is text</p>')
+      
+      const text = {
+        type: 'text',
+        text: 'Timi is cool'
+      },
+          textHTML = 'Timi is cool'
+      expect(Reader.toHTML(text)).to.equal(textHTML)
     })
     
     it('adds props to nested nodes',()=>{
@@ -201,14 +208,14 @@ describe('Reader',()=>{
     
   })
   
-  describe('getTagGroup',()=>{
+  describe('getSingleNodeGroup',()=>{
     it('exists',()=>{
-      expect(Reader.getTagGroup).to.exist
+      expect(Reader.getSingleNodeGroup).to.exist
     })
     
     it('returns a node with type and text',()=>{
       const str = '<p class="timi">Hello world</p>'
-      expect(Reader.getTagGroup(str)).to.deep.equal({
+      expect(Reader.getSingleNodeGroup(str)).to.deep.equal({
         type: 'p',
         text: 'Hello world',
         props: [{
@@ -218,7 +225,7 @@ describe('Reader',()=>{
       })
       
       const div = '<div id="app">Hello world!</div>'
-      expect(Reader.getTagGroup(div)).to.deep.equal({
+      expect(Reader.getSingleNodeGroup(div)).to.deep.equal({
         type: 'div',
         text: 'Hello world!',
         props: [{
@@ -226,6 +233,62 @@ describe('Reader',()=>{
           value: 'app'
         }]
       })
+    })
+    
+    
+    it('works when only a string is given ( no tags )',()=>{
+      const str = 'Hello world'
+      expect(Reader.getSingleNodeGroup(str)).to.deep.equal({
+        type: 'text',
+        text: 'Hello world'
+      })
+    })
+  })
+  
+  
+  describe('getTypeFromMaybeWithProps',()=>{
+    it('exists',()=>{
+      expect(Reader.getTypeFromMaybeWithProps).to.exist
+    })
+    
+    it('returns the type from an html tag',()=>{
+      const tag = '<div>',
+            type = Reader.getTypeFromMaybeWithProps(tag)
+      expect(type).to.equal('div')
+    })
+    
+    it('can handle a tag with props',()=>{
+      const tag = '<div id="app">',
+            type = Reader.getTypeFromMaybeWithProps(tag)
+      expect(type).to.equal('div')
+    })
+  })
+  
+  
+  describe('getPropsFromTag',()=>{
+    it('exists',()=>{
+      expect(Reader.getPropsFromTag).to.exist
+    })
+    
+    it('returns an array',()=>{
+      const str = 'hello',
+            props = Reader.getPropsFromTag(str)
+      expect(props).to.deep.equal([])
+    })
+    
+    it('returns an array of props attached to a tag',()=>{
+      const tag = '<div id="app" class="demo">',
+            props = [
+              {
+                name: 'id',
+                value: 'app'
+              },
+              {
+                name: 'class',
+                value: 'demo'
+              }
+            ]
+      expect(Reader.getPropsFromTag(tag)).to.deep.equal(props)
     })
   })
 
