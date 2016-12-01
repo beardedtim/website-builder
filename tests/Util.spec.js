@@ -5,7 +5,7 @@ import {
   innerText,
   tagAndProps,
   tagName,
-  getPropsFromTag
+  getProps
 } from '../src/utils'
 
 
@@ -80,25 +80,25 @@ describe('tagName',()=>{
 })
 
 
-describe('getPropsFromTag',()=>{
+describe('getProps',()=>{
   it('returns an array',()=>{
     const str = '<div id="app">Hello world</div>',
           group = getGroup(str),
-          props = getPropsFromTag(tagAndProps(group))
+          props = getProps(tagAndProps(group))
     expect(Array.isArray(props)).to.equal(true)
   })
   
   it('returns an empty array if no props are present',()=>{
     const str = '<div>Hello world</div>',
           group = getGroup(str),
-          props = getPropsFromTag(tagAndProps(group))
+          props = getProps(tagAndProps(group))
     expect(props.length).to.equal(0)
   })
   
   it('returns an array of props if props are present',()=>{
     const str = '<div id="app">Hello world</div>',
           group = getGroup(str),
-          props = getPropsFromTag(group)
+          props = getProps(group)
     expect(props).to.deep.equal([
       {
         name: 'id',

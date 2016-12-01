@@ -241,6 +241,7 @@
  }
 
 
+
  /**
   * flattenChildren - Creates HTML for children (Node[]) => String
   * 
@@ -250,6 +251,14 @@
   * 
   */   
  export const flattenChildren = (children) => {
+   if(typeof children === 'string'){
+     return children
+   }
+   if(children.toString() === '[object Object]'){
+     return children.children.reduce((final,child,i)=>{
+       return final.replace(`__BEARDED_TIM_COUNT_${i}__`,Reader.toHTML(child))
+     },children.text)
+   }
      let str = ''
      for(let i = 0; i < children.length; i++){
        str += Reader.toHTML(children[i])

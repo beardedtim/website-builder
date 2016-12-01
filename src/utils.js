@@ -52,15 +52,8 @@ export const tagAndProps = group => group[2]
  * @param {Group} group     the group returnd by getGroup
  * @return {string}         the tag name
  */ 
-export const tagName = group => tagAndProps(group).split(' ')[0]
+export const tagName = group => group[5]
 
-
-/**
- * Returns the ending tag from a group matched by getGroup
- * 
- * @param {Group} group     the group returned by getGroup
- */ 
-export const endingTag = group => group[5]
 
 
 
@@ -70,7 +63,7 @@ export const endingTag = group => group[5]
  * @param {Group} group      a group returned by getGroup
  * @return {Node[] | []}     an array of nodes of props
  */ 
-export const getPropsFromTag = (group) =>{
+export const getProps = (group) =>{
   const maybeWithoutProps = /<(.+?)>/,
         tag = group[1]
   if(maybeWithoutProps.exec(tag)){
@@ -94,3 +87,14 @@ export const getPropsFromTag = (group) =>{
   }
   
 }
+
+const Utils = {
+  getGroup,
+  containsOuterTags,
+  innerText,
+  tagAndProps,
+  tagName,
+  getProps,
+}
+
+export default Utils
