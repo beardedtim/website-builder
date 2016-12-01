@@ -34,7 +34,7 @@ Each node has a `type` which is the HTML tag that you want the node to be, a `pr
 
 ##How Does toJSON Work?
 
-There is alot of things going on but basically, we first find the first closing tag we can find. We then say that whatever that was is now a symbol inside of the string. We do this over and over again until we are left with the root div with a single symbol inside of it. 
+There is alot of things going on but basically, we first find the first closing tag we can find. Then we find where that closing tag ends. We then say that whatever that was ( between its starting tag and its closing tag ) is now a symbol inside of the string. We do this over and over again until we are left with the root div with a single symbol inside of it. 
 
 Once we have that, we start creating the node tree based off of the dictionary of symbols.
 
