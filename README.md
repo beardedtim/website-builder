@@ -32,6 +32,8 @@ You can follow along how we do this but basically converting from the JS object 
 Each node has a `type` which is the HTML tag that you want the node to be, a `prop`, which is an array of `{name,value}` for what you want prop you want along with what double quote-surrounded value you want. They also have a `children` property with is an object with `text` as a symbolized string and `children` as an array of values to insert at the correct symbol.
 
 
+If you look at `scrathpad.js` and run `node index.js`, you can see how this all works from an API perspective.
+
 ##How Does toJSON Work?
 
 There is alot of things going on but basically, we first find the first closing tag we can find. Then we find where that closing tag ends. We then say that whatever that was ( between its starting tag and its closing tag ) is now a symbol inside of the string. We do this over and over again until we are left with the root div with a single symbol inside of it. 

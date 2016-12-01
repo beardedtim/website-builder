@@ -236,7 +236,7 @@ import Utils from './src/utils'
      
      str += `${name}="${value}" `
    }
-   str += '>'
+   str = str.trim() + '>'
    return str
  }
 
