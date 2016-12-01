@@ -151,65 +151,6 @@ import Utils from './src/utils'
     }
   }
   
-  
-  
-  /**  
-   * Returns a node tree from a HTMLString string
-   * 
-   * @param {HTMLString} str      the HTMLString to parse
-   * @return {Node} node          the node tree from the HTMLString  
-   */   
-  export const getElementsFromString = (str) => {
-    if(typeof str !== 'string'){
-      throw new TypeError(`getElementString expects str to be typeof string.`)
-    }
-    const isOpeningTag = /<([^/].*?)>/,
-          isClosingTag = /<\/(.*?)>/,
-          openingTagGroup = isOpeningTag.exec(str),
-          closingTagGroup = isClosingTag.exec(str),
-          node = {}
-    
-    /**
-     * If we have an opening tag inside of this
-     */      
-    if(openingTagGroup){
-      
-      // Let's find out if we have any props
-      node.props = getPropsFromTag(openingTagGroup[0])
-      // And we need to find the tag
-      node.type = getTypeFromMaybeWithProps(openingTagGroup[1])
-      
-      // If we have a closing tag group in this structure
-      if(closingTagGroup){
-        
-        // Let's find out if we have any more opening tags
-        const withoutOpeningTag = str.replace(openingTagGroup[0],''),
-              // this will return null if there is no opening tag
-              nestedOpeningTagGroup = isOpeningTag.exec(withoutOpeningTag)
-              
-        // If we did not find a nestedOpeningTagGroup      
-        if(!nestedOpeningTagGroup){
-          // we can assume that this has no children and instead
-          // just is a text node
-          node.text = withoutOpeningTag.replace(closingTagGroup[0],'')
-        }else {
-          
-          // We assume that we have children inside of here
-          // that we somehow need to find all the opening and closing
-          // of these.
-          node.children = [getSingleNodeGroup(withoutOpeningTag)]
-          
-        }
-        
-      }
-    }else {
-      node.type = 'text'
-      node.text = str
-    }
-    
-    return node
-  }
-  
 
  /**
   * flattenProps - Creates opening HTML tag with props
@@ -439,7 +380,6 @@ export const Reader = {
       }
       return node
   },
-  getElementsFromString,
   flattenProps,
   flattenChildren,
   getSingleNodeGroup,
