@@ -254,7 +254,7 @@ import Utils from './src/utils'
    if(typeof children === 'string'){
      return children
    }
-   if(children.toString() === '[object Object]'){
+   if(children.toString() === '[object Object]' && !Array.isArray(children)){
      return children.children.reduce((final,child,i)=>{
        return final.replace(`__BEARDED_TIM_COUNT_${i}__`,Reader.toHTML(child))
      },children.text)
@@ -366,7 +366,7 @@ import Utils from './src/utils'
    }
    var rest = text,
        count = 0
-   while(true && count < 10){
+   while(true){
      const key = keys.find(x => rest.indexOf(x) >= 0)
      if(!key){
        break;
