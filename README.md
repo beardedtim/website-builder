@@ -59,7 +59,6 @@ $ nvm use
 $ yarn run start
 ```
 
-
 ##Tests
 
 TDD is our goal here. So let's use Mocha and Chai for our testing because that's what we do. We are also following the *.spec.* idea.
